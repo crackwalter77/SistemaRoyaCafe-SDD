@@ -12,41 +12,35 @@ function mapClass(label: string): string {
   return CLASS_MAP[label.toLowerCase()] || label;
 }
 
-function cleanBase64(raw: string): string {
-  const jpegMarker = "/9j/";
-  const pngMarker = "iVBOR";
-  const bmpMarker = "Qk";
-  for (const marker of [jpegMarker, pngMarker, bmpMarker]) {
-    const idx = raw.indexOf(marker);
-    if (idx !== -1) return raw.substring(idx);
-  }
-  return raw;
+function cleanImageBuffer(buf: Buffer): Buffer {
+  const jpegMagic = Buffer.from([0xff, 0xd8, 0xff]);
+  const pngMagic = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+  const idxJpeg = buf.indexOf(jpegMagic);
+  if (idxJpeg !== -1) return buf.subarray(idxJpeg);
+  const idxPng = buf.indexOf(pngMagic);
+  if (idxPng !== -1) return buf.subarray(idxPng);
+  return buf;
 }
 
 export async function classifyImage(imageBuffer: Buffer): Promise<{
   resultado: string;
   confianza: number;
 }> {
-  const base64Image = cleanBase64(imageBuffer.toString("base64"));
+  const cleanedBuffer = cleanImageBuffer(imageBuffer);
+  const base64Image = cleanedBuffer.toString("base64");
   const params = { api_key: env.ROBOFLOW_API_KEY };
   const headers = { "Content-Type": "application/x-www-form-urlencoded" };
   const timeout = 30000;
 
   let data: any;
 
-  console.log("Base64 first 80 chars after clean:", base64Image.substring(0, 80));
-  console.log("Base64 length after clean:", base64Image.length);
-
   for (const endpoint of ["detect", "classify"]) {
     try {
       const url = `https://${endpoint}.roboflow.com/${env.ROBOFLOW_MODEL_ID}`;
-      console.log(`Trying ${endpoint}: ${url}`);
       const res = await axios.post(url, base64Image, { params, headers, timeout });
       data = res.data;
-      console.log("Roboflow success:", JSON.stringify(data));
       break;
     } catch (err: any) {
-      console.log("Roboflow error:", err.response?.status, JSON.stringify(err.response?.data));
       if (endpoint === "classify") throw err;
     }
   }

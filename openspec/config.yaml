@@ -1,5 +1,10 @@
 schema: spec-driven
 
+git:
+  auto_commit: true
+  branch: develop
+  commit_prefix: "auto:"
+
 context: |
   Proyecto:
   Sistema Web para la Detección Temprana de Roya en Hojas de Café con Inteligencia Artificial

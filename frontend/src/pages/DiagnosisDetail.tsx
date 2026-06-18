@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Diagnostico } from "../types";
 import api from "../api/client";
 import { SeverityBadge } from "../components/SeverityBadge";
@@ -13,8 +13,10 @@ const resultDescriptions: Record<string, string> = {
 
 export function DiagnosisDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [diagnosis, setDiagnosis] = useState<Diagnostico | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     api.get(`/diagnosis/${id}`)
@@ -22,6 +24,18 @@ export function DiagnosisDetail() {
       .catch(() => setDiagnosis(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  async function handleDelete() {
+    if (!window.confirm("¿Está seguro de eliminar este diagnóstico? Esta acción no se puede deshacer.")) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/diagnosis/${id}`);
+      navigate("/history");
+    } catch {
+      alert("Error al eliminar el diagnóstico");
+      setDeleting(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -44,9 +58,18 @@ export function DiagnosisDetail() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <Link to="/history" className="text-emerald-700 font-medium hover:underline text-sm">
-        &larr; Volver al historial
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link to="/history" className="text-emerald-700 font-medium hover:underline text-sm">
+          &larr; Volver al historial
+        </Link>
+        <button
+          onClick={handleDelete}
+          disabled={deleting}
+          className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 disabled:opacity-50"
+        >
+          {deleting ? "Eliminando..." : "Eliminar diagnóstico"}
+        </button>
+      </div>
 
       <h1 className="text-2xl font-bold text-gray-800">Detalle del Diagnóstico</h1>
 

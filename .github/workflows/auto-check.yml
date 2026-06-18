@@ -1,0 +1,31 @@
+name: Auto Check RoyaCafe
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Verificar estructura
+        run: |
+          echo "Proyecto RoyaCafe OK"
+          ls
+
+      - name: Backend check
+        run: |
+          cd backend
+          npm install
+          npm run build
+
+      - name: Frontend check
+        run: |
+          cd frontend
+          npm install
+          npm run build

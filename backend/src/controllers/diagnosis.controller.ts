@@ -49,6 +49,20 @@ export async function getById(req: AuthRequest, res: Response) {
   }
 }
 
+export async function remove(req: AuthRequest, res: Response) {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    await diagnosisService.deleteDiagnosis(id, req.user!.userId);
+    res.json({ message: "Diagnóstico eliminado" });
+  } catch (err: any) {
+    if (err.message === "NOT_FOUND") {
+      res.status(404).json({ error: "Diagnóstico no encontrado" });
+      return;
+    }
+    res.status(500).json({ error: "Error al eliminar diagnóstico" });
+  }
+}
+
 export async function list(req: AuthRequest, res: Response) {
   try {
     const filters: DiagnosisFilters = {

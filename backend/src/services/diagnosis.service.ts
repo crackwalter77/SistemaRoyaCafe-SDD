@@ -1,6 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 import { DiagnosisFilters } from "../types";
 import { classifyImage } from "./roboflow.service";
+import { env } from "../config/env";
 
 const prisma = new PrismaClient();
 
@@ -47,6 +50,23 @@ export async function getDiagnosisById(id: number, userId: number) {
 
   if (!diagnosis) throw new Error("NOT_FOUND");
   return diagnosis;
+}
+
+export async function deleteDiagnosis(id: number, userId: number) {
+  const diagnosis = await prisma.diagnostico.findFirst({
+    where: { id, userId },
+  });
+  if (!diagnosis) throw new Error("NOT_FOUND");
+
+  const filename = diagnosis.imageUrl.replace("/api/uploads/", "");
+  const filePath = path.resolve(env.UPLOAD_DIR, filename);
+  try {
+    fs.unlinkSync(filePath);
+  } catch {
+    // ignore if file already gone
+  }
+
+  await prisma.diagnostico.delete({ where: { id } });
 }
 
 export async function listDiagnoses(userId: number, filters: DiagnosisFilters) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Diagnostico, DiagnosisFilters, PaginatedResponse } from "../types";
 import api from "../api/client";
 import { DiagnosisCard } from "../components/DiagnosisCard";
@@ -9,7 +9,7 @@ export function History() {
   const [data, setData] = useState<PaginatedResponse<Diagnostico> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadData = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
@@ -23,6 +23,18 @@ export function History() {
       .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [filters]);
+
+  useEffect(() => { loadData(); }, [loadData]);
+
+  async function handleDelete(id: number) {
+    if (!window.confirm("¿Está seguro de eliminar este diagnóstico? Esta acción no se puede deshacer.")) return;
+    try {
+      await api.delete(`/diagnosis/${id}`);
+      loadData();
+    } catch {
+      alert("Error al eliminar el diagnóstico");
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -46,7 +58,18 @@ export function History() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.data.map((d) => (
-              <DiagnosisCard key={d.id} diagnosis={d} />
+              <div key={d.id} className="relative group">
+                <DiagnosisCard diagnosis={d} />
+                <button
+                  onClick={(e) => { e.preventDefault(); handleDelete(d.id); }}
+                  className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-red-500 hover:text-white text-gray-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                  title="Eliminar diagnóstico"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             ))}
           </div>
 
