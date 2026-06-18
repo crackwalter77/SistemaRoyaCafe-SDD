@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         String        @default("agronomist")
+  createdAt    DateTime      @default(now())
+  farmers      Caficultor[]
+  diagnoses    Diagnostico[]
+}
+
+model Caficultor {
+  id        Int           @id @default(autoincrement())
+  nombre    String
+  finca     String
+  ubicacion String?
+  telefono  String?
+  email     String?
+  activo    Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
+  diagnoses Diagnostico[]
+}
+
+model Diagnostico {
+  id           Int       @id @default(autoincrement())
+  imageUrl     String
+  resultado    String    @default("pendiente")
+  confianza    Float?
+  fecha        DateTime  @default(now())
+  notas        String?
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  caficultorId Int
+  caficultor   Caficultor @relation(fields: [caficultorId], references: [id])
+}

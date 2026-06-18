@@ -1,0 +1,63 @@
+schema: spec-driven
+
+context: |
+  Proyecto:
+  Sistema Web para la Detección Temprana de Roya en Hojas de Café con Inteligencia Artificial
+
+  Problema:
+  La detección de roya en hojas de café se realiza manualmente y depende de la experiencia del técnico agrícola.
+
+  Solución:
+  Sistema web que permita cargar imágenes de hojas de café y detectar roya automáticamente mediante un modelo YOLO entrenado en Roboflow.
+
+  Actor Principal:
+  - Ingeniero Agrónomo
+
+  Funcionalidades principales:
+  - Registro e inicio de sesión
+  - Carga de imágenes JPG y PNG
+  - Diagnóstico automático mediante IA
+  - Clasificación:
+    - Sana
+    - Leve
+    - Moderado
+    - Severo
+  - Historial de diagnósticos
+  - Registro de caficultor y finca
+
+  Arquitectura:
+
+  Frontend:
+  - React
+  - TypeScript
+  - TailwindCSS
+
+  Backend:
+  - Node.js
+  - Express
+  - TypeScript
+
+  Base de datos:
+  - PostgreSQL
+
+  IA:
+  - Modelo YOLO entrenado en Roboflow
+  - Inferencia mediante API Roboflow
+
+  Despliegue:
+  - Docker Compose
+
+rules:
+  proposal:
+    - Must use grill-me skill
+    - Must ask clarification questions before generating proposal
+
+  specs:
+    - Must use gherkin-authoring skill
+
+  designs:
+    - Must use c4-architecture skill
+    - Must use uml skill
+
+  tasks:
+    - Descomponer en tareas de máximo 30 minutos
