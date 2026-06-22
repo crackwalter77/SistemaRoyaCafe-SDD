@@ -38,6 +38,8 @@
 - [x] 5.4 Crear diagnosis.routes.ts: GET, GET/:id, POST /api/diagnosis
 - [x] 5.5 Integrar Multer en la ruta POST /api/diagnosis para recibir multipart/form-data
 - [x] 5.6 Servir imágenes estáticas desde GET /api/uploads/:filename
+- [x] 5.7 Agregar DELETE /api/diagnosis/:id para eliminar diagnósticos
+- [x] 5.8 Mejorar roboflow.service.ts con limpieza de buffer (cleanImageBuffer) y fallback detect/classify
 
 ## 6. Frontend - Configuración y estructura
 
@@ -53,12 +55,14 @@
 - [x] 7.2 Crear pages/Register.tsx: formulario de registro con nombre, email, contraseña
 - [x] 7.3 Crear components/Layout.tsx: navbar con navegación principal y botón de cerrar sesión
 - [x] 7.4 Implementar protección de rutas en App.tsx usando ProtectedRoute y AuthContext
+- [x] 7.5 Agregar botón mostrar/ocultar contraseña en Login, Register y Users
 
 ## 8. Frontend - Caficultores
 
 - [x] 8.1 Crear pages/Farmers.tsx: listado de caficultores con búsqueda
-- [x] 8.2 Crear components/FarmerForm.tsx: modal o formulario para crear/editar caficultor
+- [x] 8.2 Crear components/FarmerForm.tsx: formulario para crear/editar caficultor
 - [x] 8.3 Implementar llamadas API: listar, crear, actualizar, eliminar caficultores
+- [x] 8.4 Agregar validación de teléfono (10 dígitos) y mostrar errores en campos
 
 ## 9. Frontend - Diagnóstico y resultados
 
@@ -67,6 +71,9 @@
 - [x] 9.3 Crear pages/DiagnosisDetail.tsx: vista completa con imagen, resultado, confianza, fecha, caficultor, finca, recomendación
 - [x] 9.4 Crear pages/Dashboard.tsx: resumen con últimos diagnósticos del usuario
 - [x] 9.5 Implementar flujo completo: cargar imagen → mostrar estado pendiente → mostrar resultado al completarse
+- [x] 9.6 Mejorar UI de carga de imagen: botones cambiar/quitar, previsualización clara
+- [x] 9.7 Agregar validación: si no hay caficultores/fincas, mostrar mensaje claro bloqueando diagnóstico
+- [x] 9.8 Mejorar visualización de resultados con barra de confianza y tarjeta de recomendación con borde de color
 
 ## 10. Frontend - Historial
 
@@ -74,6 +81,7 @@
 - [x] 10.2 Crear components/FilterBar.tsx: filtros por fecha, caficultor, finca, resultado, rango de confianza
 - [x] 10.3 Implementar navegación desde historial al detalle del diagnóstico
 - [x] 10.4 Manejar estados: carga, vacío, error, sin resultados de búsqueda
+- [x] 10.5 Agregar botón de eliminar diagnóstico en tarjetas del historial
 
 ## 11. Integración Docker y validación final
 
@@ -81,3 +89,13 @@
 - [x] 11.2 Probar flujo completo: registro → login → crear caficultor → cargar imagen → ver resultado → historial
 - [x] 11.3 Verificar almacenamiento persistente de imágenes en volumen Docker
 - [x] 11.4 Verificar manejo de errores: Roboflow fallo, token expirado, formato inválido, campos faltantes
+
+## 12. UX y Validaciones (post-MVP)
+
+- [x] 12.1 Botón mostrar/ocultar contraseña en todos los formularios de login/registro/usuarios
+- [x] 12.2 Mejora de carga de imágenes: botones "Cambiar imagen" y "Quitar imagen"
+- [x] 12.3 Validación de teléfono: exactamente 10 dígitos, sin permitir más
+- [x] 12.4 Validación de campos con mensajes de error visibles en FarmerForm y Users
+- [x] 12.5 Validación de prerequisitos para diagnóstico: mostrar mensaje si falta caficultor/finca
+- [x] 12.6 Mejora visual de resultados: barra de progreso de confianza, recomendación con borde de color
+- [x] 12.7 Actualización de documentación: tasks.md, design.md, spec.md

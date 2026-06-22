@@ -6,6 +6,7 @@ import { authRouter } from "./routes/auth.routes";
 import { farmersRouter } from "./routes/farmers.routes";
 import { diagnosisRouter } from "./routes/diagnosis.routes";
 import { usersRouter } from "./routes/users.routes";
+import { profileRouter } from "./routes/profile.routes";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/farmers", farmersRouter);
 app.use("/api/diagnosis", diagnosisRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/profile", profileRouter);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });

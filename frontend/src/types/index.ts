@@ -2,6 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  telefono?: string | null;
   role: string;
   createdAt: string;
 }

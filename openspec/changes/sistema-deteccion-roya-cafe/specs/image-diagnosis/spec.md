@@ -19,6 +19,23 @@ El sistema SHALL permitir al Ingeniero Agrónomo autenticado cargar una imagen d
 - **WHEN** el usuario envía un archivo mayor a 10 MB
 - **THEN** el sistema retorna un error 400 con mensaje "La imagen excede el tamaño máximo de 10 MB"
 
+### Requirement: Gestión de imagen en frontend
+
+El sistema SHOULD permitir al usuario gestionar la imagen seleccionada antes de enviarla:
+- Botón para seleccionar/cambiar imagen
+- Botón para quitar/eliminar la imagen cargada
+- Previsualización clara de la imagen antes del análisis
+
+#### Scenario: Cambiar imagen seleccionada
+
+- **WHEN** el usuario selecciona una imagen y luego hace clic en "Cambiar imagen"
+- **THEN** el sistema abre el selector de archivos y permite reemplazar la imagen
+
+#### Scenario: Quitar imagen seleccionada
+
+- **WHEN** el usuario hace clic en "Quitar imagen"
+- **THEN** el sistema elimina la previsualización y reinicia el estado de selección
+
 ### Requirement: Clasificación automática con Roboflow YOLO
 
 El sistema SHALL enviar la imagen cargada a la API de Roboflow Inference para clasificarla utilizando el modelo YOLO entrenado. El sistema SHALL clasificar el resultado en una de cuatro categorías: `Sana`, `Leve`, `Moderado` o `Severo`. La confianza del modelo SHALL ser almacenada como porcentaje.
@@ -33,6 +50,16 @@ El sistema SHALL enviar la imagen cargada a la API de Roboflow Inference para cl
 - **WHEN** la API de Roboflow retorna un error o timeout
 - **THEN** el sistema marca el diagnóstico como "Error" y guarda el mensaje de error para reintento manual
 
+#### Scenario: Imagen con cabeceras MIME corruptas
+
+- **WHEN** la imagen almacenada contiene cabeceras MIME adicionales (por malformación en multipart)
+- **THEN** el sistema limpia automáticamente el buffer eliminando cabeceras no pertenecientes a la imagen
+
+#### Scenario: Fallback de endpoint Roboflow
+
+- **WHEN** el endpoint `detect.roboflow.com` falla
+- **THEN** el sistema reintenta automáticamente con `classify.roboflow.com`
+
 ### Requirement: Asociación de diagnóstico con caficultor y finca
 
 El sistema SHALL requerir que cada diagnóstico esté asociado a un caficultor registrado y su finca correspondiente. Estos datos SHOULD ser seleccionables desde un listado de caficultores existentes.
@@ -46,3 +73,8 @@ El sistema SHALL requerir que cada diagnóstico esté asociado a un caficultor r
 
 - **WHEN** el usuario intenta cargar una imagen sin seleccionar un caficultor
 - **THEN** el sistema retorna un error 400 con mensaje "Debe seleccionar un caficultor"
+
+#### Scenario: Diagnóstico sin caficultores registrados
+
+- **WHEN** el usuario accede al formulario de diagnóstico sin tener caficultores registrados
+- **THEN** el sistema muestra un mensaje: "No puede realizar el diagnóstico. Primero debe registrar el Ingeniero Agrónomo, Caficultor y Finca correspondiente."

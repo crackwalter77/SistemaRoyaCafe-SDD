@@ -1,0 +1,53 @@
+@startuml
+!theme plain
+skinparam participant {
+  BackgroundColor #F8F9FA
+  BorderColor #2D6A4F
+}
+skinparam arrow {
+  Color #2D6A4F
+}
+
+title Secuencia: Realizar Diagnóstico
+
+actor "Ing. Agrónomo" as User
+boundary "Navegador" as Browser
+boundary "Frontend (React)" as Frontend
+boundary "Backend (Express)" as Backend
+boundary "Multer" as Upload
+boundary "Prisma ORM" as DB
+boundary "Roboflow API" as Roboflow
+
+User -> Browser: 1. Selecciona imagen (JPEG/PNG)
+Browser -> Frontend: 2. onChange -> handleImageChange()
+Frontend -> Frontend: 3. Crea ObjectURL\npara preview
+Frontend -> Browser: 4. Muestra preview
+User -> Browser: 5. Selecciona caficultor
+Browser -> Frontend: 6. onChange -> setCaficultorId()
+User -> Browser: 7. Click "Realizar Diagnóstico"
+Browser -> Frontend: 8. Submit formulario
+
+Frontend -> Backend: 9. POST /api/diagnosis\nmultipart/form-data
+Backend -> Upload: 10. Multer procesa archivo
+Upload -> Backend: 11. File guardado en /app/uploads/
+Backend -> DB: 12. prisma.diagnostico.create()
+DB --> Backend: 13. Diagnóstico creado (pendiente)
+
+Backend -> Backend: 14. fs.readFileSync()\nimagen desde disco
+Backend -> Backend: 15. cleanImageBuffer()\nquita cabeceras MIME
+Backend -> Roboflow: 16. POST detect.roboflow.com\nbase64 + api_key
+Roboflow --> Backend: 17. predictions[] o vacío
+alt No hay predicciones
+  Backend -> Roboflow: 18. Fallback: classify.roboflow.com
+  Roboflow --> Backend: 19. predictions[]
+end
+
+Backend -> Backend: 20. Selecciona mejor\npredicción (mayor confianza)
+Backend -> DB: 21. prisma.diagnostico.update()\nresultado + confianza
+DB --> Backend: 22. Diagnóstico actualizado
+
+Backend --> Frontend: 23. 201 JSON {id, resultado,\nconfianza, caficultor}
+Frontend -> Frontend: 24. setResult(data)
+Frontend -> Browser: 25. Renderiza SeverityBadge,\nbarra de confianza,\nrecomendación
+
+@enduml

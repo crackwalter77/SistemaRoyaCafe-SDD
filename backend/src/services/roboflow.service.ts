@@ -27,9 +27,8 @@ export async function classifyImage(imageBuffer: Buffer): Promise<{
   confianza: number;
 }> {
   const cleanedBuffer = cleanImageBuffer(imageBuffer);
-  const base64Image = cleanedBuffer.toString("base64");
+  const base64 = cleanedBuffer.toString("base64");
   const params = { api_key: env.ROBOFLOW_API_KEY };
-  const headers = { "Content-Type": "application/x-www-form-urlencoded" };
   const timeout = 30000;
 
   let data: any;
@@ -37,7 +36,11 @@ export async function classifyImage(imageBuffer: Buffer): Promise<{
   for (const endpoint of ["detect", "classify"]) {
     try {
       const url = `https://${endpoint}.roboflow.com/${env.ROBOFLOW_MODEL_ID}`;
-      const res = await axios.post(url, base64Image, { params, headers, timeout });
+      const res = await axios.post(url, base64, {
+        params,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        timeout,
+      });
       data = res.data;
       break;
     } catch (err: any) {

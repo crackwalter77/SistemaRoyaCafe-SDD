@@ -31,7 +31,8 @@ export async function create(req: AuthRequest, res: Response) {
 
     res.status(201).json(processed);
   } catch (err: any) {
-    res.status(500).json({ error: "Error al crear diagnóstico" });
+    console.error("Error creating diagnosis:", err);
+    res.status(500).json({ error: "Error al crear diagnóstico", detail: err.message });
   }
 }
 

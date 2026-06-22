@@ -10,7 +10,7 @@ export function Layout() {
     { to: "/diagnosis/new", label: "Nuevo Diagnóstico" },
     { to: "/history", label: "Historial" },
     { to: "/farmers", label: "Caficultores" },
-    { to: "/users", label: "Ingenieros" },
+    { to: "/profile", label: "Mi Perfil" },
   ];
 
   return (

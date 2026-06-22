@@ -17,7 +17,7 @@ export async function registerUser(name: string, email: string, password: string
     data: { name, email, passwordHash, role: "agronomist" },
   });
 
-  return { id: user.id, name: user.name, email: user.email };
+  return { id: user.id, name: user.name, email: user.email, telefono: user.telefono };
 }
 
 export async function loginUser(email: string, password: string) {
@@ -36,7 +36,7 @@ export async function loginUser(email: string, password: string) {
 
   return {
     token,
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    user: { id: user.id, name: user.name, email: user.email, role: user.role, telefono: user.telefono },
   };
 }
 

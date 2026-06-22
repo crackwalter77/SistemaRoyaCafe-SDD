@@ -11,16 +11,18 @@ La roya del café (Hemileia vastatrix) es una enfermedad que causa pérdidas sig
 - Almacenamiento de cada diagnóstico con: imagen, resultado, confianza, fecha, caficultor y finca
 - Historial completo de diagnósticos con búsqueda y filtros
 - Registro y gestión de datos de caficultores
+- CRUD completo de Ingenieros Agrónomos
 - Despliegue local con Docker Compose (app + PostgreSQL)
 
 ## Capabilities
 
 ### New Capabilities
-- `authentication`: Autenticación y gestión de sesiones para Ingenieros Agrónomos mediante JWT
-- `image-diagnosis`: Carga de imágenes de hojas de café y clasificación automática usando Roboflow YOLO API
-- `results-view`: Visualización de resultados de diagnóstico con niveles de severidad y métricas de confianza
-- `diagnostic-history`: Historial de diagnósticos realizados con capacidad de búsqueda, filtrado y exportación
-- `farmer-registry`: Registro y gestión de datos de caficultores (nombre, finca, ubicación, contacto)
+- `authentication`: Autenticación y gestión de sesiones para Ingenieros Agrónomos mediante JWT, con toggle de visibilidad de contraseña
+- `image-diagnosis`: Carga de imágenes de hojas de café y clasificación automática usando Roboflow YOLO API, con previsualización y gestión de imagen
+- `results-view`: Visualización de resultados de diagnóstico con niveles de severidad, barra de confianza y recomendaciones fitosanitarias
+- `diagnostic-history`: Historial de diagnósticos realizados con capacidad de búsqueda, filtrado, eliminación y exportación
+- `farmer-registry`: Registro y gestión de datos de caficultores (nombre, finca, ubicación, contacto) con validación de teléfono
+- `user-management`: CRUD completo de Ingenieros Agrónomos con validación de campos
 
 ### Modified Capabilities
 

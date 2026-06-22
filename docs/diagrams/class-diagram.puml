@@ -1,0 +1,96 @@
+@startuml
+!theme plain
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor #F8F9FA
+  BorderColor #2D6A4F
+  ArrowColor #2D6A4F
+}
+
+package "Sistema Roya Café" {
+
+  class User {
+    - id: number
+    - name: string
+    - email: string
+    - passwordHash: string
+    - telefono: string?
+    - role: string
+    - createdAt: DateTime
+    + register(name, email, password): User
+    + login(email, password): {token, user}
+    + updateProfile(data): User
+    + deleteProfile(password): void
+  }
+
+  class Caficultor {
+    - id: number
+    - nombre: string
+    - finca: string
+    - ubicacion: string?
+    - telefono: string?
+    - email: string?
+    - activo: boolean
+    - createdAt: DateTime
+    - userId: number
+    + create(data): Caficultor
+    + update(id, data): Caficultor
+    + delete(id): void
+    + findAll(userId): Caficultor[]
+  }
+
+  class Diagnostico {
+    - id: number
+    - imageUrl: string
+    - resultado: Resultado
+    - confianza: number?
+    - fecha: DateTime
+    - notas: string?
+    - userId: number
+    - caficultorId: number
+    + create(image, caficultorId): Diagnostico
+    + processImage(imageBuffer): {resultado, confianza}
+    + findById(id): Diagnostico
+    + delete(id): void
+    + list(userId, filters): PaginatedResponse
+  }
+
+  enum Resultado {
+    Sana
+    Leve
+    Moderado
+    Severo
+    Error
+    pendiente
+  }
+
+  class RoboflowService {
+    - apiKey: string
+    - modelId: string
+    + classifyImage(buffer): {resultado, confianza}
+    - cleanImageBuffer(buf): Buffer
+    - mapClass(label): string
+  }
+
+  class AuthMiddleware {
+    + verifyToken(req): AuthPayload
+  }
+
+  class ImageStorage {
+    - uploadDir: string
+    + save(file): string
+    + delete(filename): void
+  }
+
+}
+
+' Relationships
+User "1" -- "0..*" Caficultor : posee >
+User "1" -- "0..*" Diagnostico : realiza >
+Caficultor "1" -- "0..*" Diagnostico : asociado a >
+Diagnostico "1" -- "1" Resultado : clasifica >
+Diagnostico ..> RoboflowService : utiliza >
+RoboflowService ..> ImageStorage : lee >
+AuthMiddleware ..> User : valida >
+
+@enduml

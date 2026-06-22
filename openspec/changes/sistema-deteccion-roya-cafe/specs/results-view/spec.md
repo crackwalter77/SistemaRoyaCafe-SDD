@@ -28,6 +28,15 @@ El sistema SHALL mostrar un indicador visual (color o ícono) diferenciado para 
 - **WHEN** el resultado del diagnóstico es "Severo"
 - **THEN** el sistema muestra un indicador rojo con el texto "Severo" y el porcentaje de confianza
 
+### Requirement: Barra de confianza
+
+El sistema SHOULD mostrar una barra de progreso visual que represente el porcentaje de confianza del modelo en el resultado, con color correspondiente al nivel de severidad.
+
+#### Scenario: Visualización con barra de confianza
+
+- **WHEN** el usuario ve el resultado de un diagnóstico con confianza disponible
+- **THEN** el sistema muestra una barra de progreso horizontal con el porcentaje y color del nivel de severidad
+
 ### Requirement: Interpretación del resultado
 
 El sistema SHOULD mostrar una breve descripción textual del significado del nivel de severidad y una recomendación fitosanitaria general basada en el resultado obtenido.
@@ -36,3 +45,17 @@ El sistema SHOULD mostrar una breve descripción textual del significado del niv
 
 - **WHEN** el usuario ve el resultado de un diagnóstico clasificado como "Moderado"
 - **THEN** el sistema muestra junto al resultado un texto explicativo con recomendaciones para el nivel moderado de infección
+
+### Requirement: Eliminación de diagnóstico
+
+El sistema SHALL permitir al Ingeniero Agrónomo eliminar un diagnóstico existente, incluyendo la imagen asociada del disco.
+
+#### Scenario: Eliminación exitosa
+
+- **WHEN** el usuario autenticado envía DELETE `/api/diagnosis/:id`
+- **THEN** el sistema elimina el registro de la base de datos y el archivo de imagen, retornando código 200
+
+#### Scenario: Eliminación de diagnóstico inexistente
+
+- **WHEN** el usuario intenta eliminar un diagnóstico que no existe
+- **THEN** el sistema retorna un error 404 con mensaje "Diagnóstico no encontrado"

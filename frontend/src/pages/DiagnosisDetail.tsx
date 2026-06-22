@@ -56,6 +56,11 @@ export function DiagnosisDetail() {
     );
   }
 
+  const confianzaColor = diagnosis.resultado === "Sana" ? "bg-green-500" :
+    diagnosis.resultado === "Leve" ? "bg-yellow-500" :
+    diagnosis.resultado === "Moderado" ? "bg-orange-500" :
+    diagnosis.resultado === "Severo" ? "bg-red-500" : "bg-gray-500";
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
@@ -81,7 +86,7 @@ export function DiagnosisDetail() {
         />
 
         <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm text-gray-500">Resultado</p>
               <SeverityBadge resultado={diagnosis.resultado} confianza={diagnosis.confianza} />
@@ -99,6 +104,23 @@ export function DiagnosisDetail() {
               </p>
             </div>
           </div>
+
+          {diagnosis.confianza !== null && diagnosis.confianza !== undefined && diagnosis.resultado !== "Error" && (
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Confianza del modelo</p>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${confianzaColor}`}
+                    style={{ width: `${Math.min(diagnosis.confianza, 100)}%` }}
+                  />
+                </div>
+                <span className="text-sm font-semibold text-gray-700 min-w-[4rem] text-right">
+                  {diagnosis.confianza.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          )}
 
           <div className="border-t pt-4">
             <h3 className="text-sm font-medium text-gray-500 mb-3">Información del Caficultor</h3>
@@ -123,7 +145,12 @@ export function DiagnosisDetail() {
           {diagnosis.resultado !== "Error" && diagnosis.resultado !== "pendiente" && (
             <div className="border-t pt-4">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Recomendación Fitosanitaria</h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className={`rounded-lg p-4 border-l-4 ${
+                diagnosis.resultado === "Sana" ? "bg-green-50 border-green-500" :
+                diagnosis.resultado === "Leve" ? "bg-yellow-50 border-yellow-500" :
+                diagnosis.resultado === "Moderado" ? "bg-orange-50 border-orange-500" :
+                "bg-red-50 border-red-500"
+              }`}>
                 <p className="text-sm text-gray-700">{resultDescriptions[diagnosis.resultado]}</p>
               </div>
             </div>

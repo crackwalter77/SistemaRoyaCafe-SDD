@@ -100,7 +100,8 @@ sistema-roya-cafe/
 │       │   ├── NewDiagnosis.tsx
 │       │   ├── DiagnosisDetail.tsx
 │       │   ├── History.tsx
-│       │   └── Farmers.tsx
+│       │   ├── Farmers.tsx
+│       │   └── Users.tsx
 │       └── types/
 │           └── index.ts
 ```
@@ -160,7 +161,12 @@ model Diagnostico {
 | GET | `/api/diagnosis` | Sí | Listar diagnósticos (paginado, filtros) |
 | GET | `/api/diagnosis/:id` | Sí | Detalle de diagnóstico |
 | POST | `/api/diagnosis` | Sí | Cargar imagen + crear diagnóstico (multipart) |
+| DELETE | `/api/diagnosis/:id` | Sí | Eliminar diagnóstico y su imagen |
 | GET | `/api/uploads/:filename` | Sí | Servir imagen almacenada |
+| GET | `/api/users` | Sí | Listar Ingenieros Agrónomos |
+| POST | `/api/users` | Sí | Crear Ingeniero Agrónomo |
+| PUT | `/api/users/:id` | Sí | Actualizar Ingeniero Agrónomo |
+| DELETE | `/api/users/:id` | Sí | Eliminar Ingeniero Agrónomo |
 
 Filtros en GET `/api/diagnosis`:
 - `page` (int, default 1), `limit` (int, default 10)
@@ -179,11 +185,14 @@ Filtros en GET `/api/diagnosis`:
     ↓
 [Express] → Crea Diagnostico con resultado="pendiente"
     ↓
-[Express] → RoboflowService.fetch(imageBuffer)
+[Express] → RoboflowService.classifyImage(imageBuffer)
     ↓
-[Roboflow API] → Retorna predicciones [{class, confidence}]
+  ├─ cleanImageBuffer() → busca cabeceras MIME y las elimina
+  ├─ Intenta endpoint detect.roboflow.com
+  │   └─ Si falla → fallback a classify.roboflow.com
+  └─ Extrae predicción con mayor confianza
     ↓
-[Express] → Elige clase con mayor confianza → actualiza Diagnostico
+[Express] → Actualiza Diagnostico con resultado y confianza
     ↓
 [Express] → Retorna resultado al frontend
 ```
@@ -199,13 +208,14 @@ Filtros en GET `/api/diagnosis`:
 
 | Ruta | Componente | Descripción |
 |------|-----------|-------------|
-| `/login` | Login | Formulario de inicio de sesión |
-| `/register` | Register | Formulario de registro |
+| `/login` | Login | Formulario de inicio de sesión con toggle de visibilidad de contraseña |
+| `/register` | Register | Formulario de registro con toggle de visibilidad de contraseña |
 | `/` | Dashboard | Resumen: últimos diagnósticos, acceso rápido |
-| `/diagnosis/new` | NewDiagnosis | Cargar imagen + seleccionar caficultor |
-| `/diagnosis/:id` | DiagnosisDetail | Ver resultado con indicador de severidad |
-| `/history` | History | Historial con filtros |
-| `/farmers` | Farmers | CRUD de caficultores |
+| `/diagnosis/new` | NewDiagnosis | Cargar imagen + seleccionar caficultor; botones cambiar/quitar imagen; validación de prerequisitos |
+| `/diagnosis/:id` | DiagnosisDetail | Ver resultado con barra de confianza, indicador de severidad y recomendación con borde de color |
+| `/history` | History | Historial con filtros y botón de eliminar en cada tarjeta |
+| `/farmers` | Farmers | CRUD de caficultores con validación de teléfono (10 dígitos) |
+| `/users` | Users | CRUD de Ingenieros Agrónomos con toggle de visibilidad de contraseña |
 
 ### Docker Compose
 

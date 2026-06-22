@@ -46,3 +46,17 @@ El sistema SHALL proteger todas las rutas de la API (excepto registro y login) m
 
 - **WHEN** el usuario envía una solicitud con un token JWT expirado
 - **THEN** el sistema retorna un error 401 con mensaje "Token expirado"
+
+### Requirement: Visibilidad de contraseña
+
+El sistema SHOULD permitir al usuario mostrar u ocultar la contraseña en los formularios de inicio de sesión, registro y creación de usuarios, mediante un ícono de ojo dentro del campo de contraseña.
+
+#### Scenario: Mostrar contraseña
+
+- **WHEN** el usuario hace clic en el ícono de ojo en un campo de contraseña
+- **THEN** el sistema cambia el tipo del campo a "text" para mostrar la contraseña
+
+#### Scenario: Ocultar contraseña
+
+- **WHEN** el usuario hace clic en el ícono de ojo tachado mientras la contraseña es visible
+- **THEN** el sistema cambia el tipo del campo a "password" para ocultar la contraseña

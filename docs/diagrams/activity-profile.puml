@@ -1,0 +1,62 @@
+@startuml
+!theme plain
+skinparam activity {
+  BackgroundColor #F8F9FA
+  BorderColor #2D6A4F
+  ArrowColor #2D6A4F
+}
+skinparam note {
+  BorderColor #95A5A6
+}
+
+title Actividad: Gestión de Perfil de Usuario
+
+start
+:Ing. Agrónomo inicia sesión;
+:Frontend solicita GET /api/profile;
+:Backend consulta BD y retorna\ndatos del usuario (name, email, telefono);
+:Frontend muestra formulario con\ndatos actuales;
+
+repeat
+  :Usuario modifica campos\n(name, email, telefono,\ncontraseña opcional);
+  :Usuario hace clic\n"Guardar Cambios";
+  :Frontend valida campos;
+
+  if (¿Campos válidos?) then (Sí)
+    :Frontend envía PUT /api/profile\ncon datos modificados;
+    :Backend actualiza en BD;
+    if (¿Email duplicado?) then (Sí)
+      :Backend retorna 409\n"El email ya está en uso";
+      :Frontend muestra error al usuario;
+    else (No)
+      :Backend retorna 200 con\nusuario actualizado;
+      :Frontend actualiza localStorage;
+      :Muestra mensaje "Perfil\nactualizado correctamente";
+    endif
+  else (No)
+    :Frontend muestra errores\njunto a cada campo;
+  endif
+
+repeat while (¿Usuario quiere\nseguir editando?) is (Sí)
+-> No;
+
+:Usuario decide\n"Eliminar Cuenta";
+:Frontend muestra campo\npara ingresar contraseña;
+:Usuario ingresa contraseña\ny confirma;
+:Frontend envía DELETE /api/profile\ncon contraseña;
+
+:Backend verifica contraseña\ncon bcrypt.compare();
+if (¿Contraseña correcta?) then (Sí)
+  :Backend elimina diagnósticos\ne imágenes asociadas;
+  :Backend elimina caficultores\ndel usuario;
+  :Backend elimina usuario;
+  :Backend retorna 200 OK;
+  :Frontend limpia token\ny redirige a /login;
+  stop
+else (No)
+  :Backend retorna 401\n"Contraseña incorrecta";
+  :Frontend muestra error al usuario;
+  :Usuario puede reintentar\no cancelar;
+endif
+
+@enduml

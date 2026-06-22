@@ -12,6 +12,7 @@ model User {
   name         String
   email        String        @unique
   passwordHash String
+  telefono     String?
   role         String        @default("agronomist")
   createdAt    DateTime      @default(now())
   farmers      Caficultor[]

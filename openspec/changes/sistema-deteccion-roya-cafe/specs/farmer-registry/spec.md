@@ -14,6 +14,25 @@ El sistema SHALL permitir al Ingeniero Agrónomo autenticado registrar un nuevo 
 - **WHEN** el usuario envía datos sin completar campos requeridos (nombre, finca)
 - **THEN** el sistema retorna un error 400 con mensaje "Los campos nombre y finca son obligatorios"
 
+### Requirement: Validación de teléfono
+
+El sistema SHOULD validar que el número de teléfono tenga exactamente 10 dígitos y no permitir ingresar más de 10 caracteres en el campo.
+
+#### Scenario: Teléfono válido
+
+- **WHEN** el usuario ingresa exactamente 10 dígitos en el campo de teléfono
+- **THEN** el sistema acepta el valor sin errores
+
+#### Scenario: Teléfono con menos de 10 dígitos
+
+- **WHEN** el usuario ingresa menos de 10 dígitos en el campo de teléfono
+- **THEN** el sistema muestra un mensaje de error: "El número debe tener exactamente 10 dígitos"
+
+#### Scenario: Teléfono con más de 10 dígitos
+
+- **WHEN** el usuario intenta ingresar más de 10 caracteres en el campo de teléfono
+- **THEN** el sistema limita la entrada a 10 dígitos automáticamente
+
 ### Requirement: Listado de caficultores
 
 El sistema SHALL mostrar un listado de todos los caficultores registrados por el Ingeniero Agrónomo autenticado, con la posibilidad de buscar por nombre o finca.
